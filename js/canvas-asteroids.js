@@ -25,7 +25,7 @@ var hScan;
 var asteroidVelFactor = 0;
 
 var allIdle = false;
-var gameOver = false;
+var gameResetDelay = 0;
 
 //keyboard vars
 
@@ -213,11 +213,12 @@ function loop()
 		return ship.idle;
 	})
 
-	if(allIdle && !gameOver){
-		gameOver = true;
-		setTimeout(function(){
-			resetGame();
-		}, 2000)
+	if(allIdle) {
+		gameResetDelay++;
+	}
+
+	if(allIdle && gameResetDelay > 120){
+		resetGame();
 	}
 	updateParticles();
 	updateBullets();
@@ -686,7 +687,7 @@ function resetGame()
 		ship.vel.setXY(0, 0);
 	})
 
-	gameOver = false;
+	gameResetDelay = 0;
 
 	resetAsteroids();
 }
