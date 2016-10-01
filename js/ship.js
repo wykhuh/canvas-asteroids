@@ -45,8 +45,6 @@ var Ship = (function()
 				{
 					this.idleDelay = 0;
 					this.idle = false;
-
-					this.ref.resetGame();
 				}
 			}
 		},

@@ -24,6 +24,8 @@ var asteroids;
 var hScan;
 var asteroidVelFactor = 0;
 
+var allIdle = false;
+
 //keyboard vars
 
 var keyLeft = false;
@@ -201,8 +203,18 @@ function randomValue(value) {
 function loop()
 {
 	ships.forEach(function(ship){
-		updateShip(ship);
+		if(!ship.idle){
+			updateShip(ship);
+		}
 	})
+
+	allIdle = ships.every(function(ship){
+		return ship.idle;
+	})
+
+	if(allIdle){
+		resetGame();
+	}
 	updateParticles();
 	updateBullets();
 	updateAsteroids();
@@ -665,6 +677,7 @@ function resetGame()
 	asteroidVelFactor = 0;
 
 	ships.forEach(function(ship){
+		ship.idle = false;
 		ship.pos.setXY(randomValue(screenWidth), randomValue(screenHeight));
 		ship.vel.setXY(0, 0);
 	})
