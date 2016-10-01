@@ -2,6 +2,7 @@ var Asteroid = (function()
 {
 	//exposed methods:
 
+
 	var create = function()
 	{
 		var obj = Object.create(def);
@@ -11,7 +12,7 @@ var Asteroid = (function()
 		obj.vel = Vec2D.create(0, 0);
 		obj.blacklisted = false;
 		obj.type = 'b';
-		obj.sides = (Math.random() * 2 + 7) >> 0;
+		obj.sides = getRandomInt(3, 8);
 		obj.angle = 0;
 		obj.angleVel = (1 - Math.random() * 2) * 0.01;
 
@@ -19,6 +20,10 @@ var Asteroid = (function()
 	};
 
 	//Ship definition:
+
+	function getRandomInt(min, max) {
+	  return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
 
 	var def =
 	{
