@@ -502,7 +502,7 @@ function generateAsteroidExplosion(asteroid)
 
 		p.radius = Math.random() * (asteroid.radius >> 2) + 2;
 		p.lifeSpan = 80;
-		p.color = '#FF5900';
+		p.color = Shared.randomColor();
 		p.vel.setLength(20 / p.radius);
 		ships.forEach(function(ship) {
 			p.vel.setAngle(ship.angle + (1 - Math.random() * 2) * doublePI);
