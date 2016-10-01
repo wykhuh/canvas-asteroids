@@ -55,7 +55,7 @@ var Ship = (function()
 		{
 			if(this.bulletDelay > 8)
 			{
-				this.ref.generateShot();
+				this.ref.generateShot(this);
 				this.bulletDelay = 0;
 			}
 		}

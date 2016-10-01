@@ -9,6 +9,8 @@ var doublePI = Math.PI * 2;
 //game vars
 
 var ship;
+var ships = [];
+var fleetSize = 5;
 
 var particlePool;
 var particles;
@@ -187,12 +189,20 @@ function asteroidInit()
 
 function shipInit()
 {
-	ship = Ship.create(screenWidth >> 1, screenHeight >> 1, this);
+	for (var i = 0; i < fleetSize; i++) {
+		ships.push(Ship.create(randomValue(screenWidth) , randomValue(screenHeight), this));
+	}
+}
+
+function randomValue(value) {
+	return  Math.floor(Math.random() * value)
 }
 
 function loop()
 {
-	updateShip();
+	ships.forEach(function(ship){
+		updateShip(ship);
+	})
 	updateParticles();
 	updateBullets();
 	updateAsteroids();
@@ -204,7 +214,7 @@ function loop()
 	getAnimationFrame(loop);
 }
 
-function updateShip()
+function updateShip(ship)
 {
 	ship.update();
 
@@ -219,7 +229,7 @@ function updateShip()
 		ship.thrust.setLength(0.1);
 		ship.thrust.setAngle(ship.angle);
 
-		generateThrustParticle();
+		generateThrustParticle(ship);
 	}
 	else
 	{
@@ -234,7 +244,7 @@ function updateShip()
 	else if(ship.pos.getY() < 0) ship.pos.setY(screenHeight);
 }
 
-function generateThrustParticle()
+function generateThrustParticle(ship)
 {
 	var p = particlePool.getElement();
 
@@ -397,21 +407,24 @@ function checkShipAsteroidCollisions()
 	for(i; i > -1; --i)
 	{
 		var a = asteroids[i];
-		var s = ship;
 
-		if(checkDistanceCollision(a, s))
-		{
-			if(s.idle) return;
+		ships.forEach(function(ship){
 
-			s.idle = true;
+			if(checkDistanceCollision(a, ship))
+			{
+				if(ship.idle) return;
 
-			generateShipExplosion();
-			destroyAsteroid(a);
-		}
+				ship.idle = true;
+
+				generateShipExplosion(ship);
+				destroyAsteroid(a);
+			}
+		})
+
 	}
 }
 
-function generateShipExplosion()
+function generateShipExplosion(ship)
 {
 	var i = 18;
 
@@ -474,7 +487,9 @@ function generateAsteroidExplosion(asteroid)
 		p.lifeSpan = 80;
 		p.color = '#FF5900';
 		p.vel.setLength(20 / p.radius);
-		p.vel.setAngle(ship.angle + (1 - Math.random() * 2) * doublePI);
+		ships.forEach(function(ship) {
+			p.vel.setAngle(ship.angle + (1 - Math.random() * 2) * doublePI);
+		})
 		p.pos.setXY(asteroid.pos.getX() + Math.cos(p.vel.getAngle()) * (asteroid.radius * 0.8), asteroid.pos.getY() + Math.sin(p.vel.getAngle()) * (asteroid.radius * 0.8));
 
 		//particles[particles.length] = p; same as: particles.push(p);
@@ -510,14 +525,16 @@ function render()
 	context.fillRect(0, 0, screenWidth, screenHeight);
 	context.globalAlpha = 1;
 
-	renderShip();
+	ships.forEach(function(ship){
+		renderShip(ship);
+	});
 	renderParticles();
 	renderBullets();
 	renderAsteroids();
 	renderScanlines();
 }
 
-function renderShip()
+function renderShip(ship)
 {
 	if(ship.idle) return;
 
@@ -595,11 +612,11 @@ function renderAsteroids()
 		for(j; j > -1; --j)
 		{
 			context.lineTo((a.pos.getX() + Math.cos(doublePI * (j / a.sides) + a.angle) * a.radius) >> 0, (a.pos.getY() + Math.sin(doublePI * (j / a.sides) + a.angle) * a.radius) >> 0);
-			
+
 		}
 
 		if(Math.random() > 0.2) context.stroke();
-		
+
 		context.closePath();
 	}
 }
@@ -625,7 +642,7 @@ function renderScanlines()
 	context.globalAlpha = 1;
 }
 
-function generateShot()
+function generateShot(ship)
 {
 	var b = bulletPool.getElement();
 
@@ -647,8 +664,10 @@ function resetGame()
 {
 	asteroidVelFactor = 0;
 
-	ship.pos.setXY(screenWidth >> 1, screenHeight >> 1);
-	ship.vel.setXY(0, 0);
+	ships.forEach(function(ship){
+		ship.pos.setXY(randomValue(screenWidth), randomValue(screenHeight));
+		ship.vel.setXY(0, 0);
+	})
 
 	resetAsteroids();
 }
