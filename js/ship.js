@@ -12,7 +12,6 @@ var Ship = (function()
 		obj.thrust = Vec2D.create(0, 0);
 		obj.idle = false;
 		obj.radius = 8;
-		obj.idleDelay = 0;
 
 		return obj;
 	};
@@ -38,15 +37,6 @@ var Ship = (function()
 			if(this.vel.getLength() > 5) this.vel.setLength(5);
 
 			++this.bulletDelay;
-
-			if(this.idle)
-			{
-				if(++this.idleDelay > 120)
-				{
-					this.idleDelay = 0;
-					this.idle = false;
-				}
-			}
 		},
 
 		shoot: function()
